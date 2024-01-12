@@ -1,0 +1,130 @@
+import cv2
+import tkinter as tk
+from tkinter import simpledialog, messagebox
+from vehiclerecognition import recognize_license_plate
+from db_workers import is_operator_assigned
+from facialrecognition import capture_face_from_camera, load_known_faces_from_db
+
+add_employee_button = tk.Button(options_interface, text="Add New Employee", command=add_employee_gui)
+delete_employee_button = tk.Button(options_interface, text="Delete Employee", command=delete_employee_gui)
+edit_employee_button = tk.Button(options_interface, text="Edit Employee", command=edit_employee_gui)
+
+# Function to open the camera for facial recognition or license plate recognition
+def open_camera():
+
+    from vehicle_recognition import recognize_license_plate
+from facialrecognition import capture_face_from_camera
+
+def open_camera_for_recognition(recognition_type):
+    frame = capture_image_from_camera()
+
+    if frame is not None:
+        if recognition_type == 'recognize_license_plate':
+            license_plate = recognize_license_plate(frame)
+            print("License Plate:", license_plate)
+        elif recognition_type == 'capture_face_from_camera':
+            face_data = capture_face_from_camera(frame)
+            print("Face Data:", face_data)
+        else:
+            print("Invalid recognition type specified")
+    else:
+        print("No image captured from camera")
+
+
+    pass
+
+
+# def add_employee():from tkinter import simpledialog
+
+def add_employee_gui():
+    first_name = simpledialog.askstring("Input", "Enter first name", parent=options_interface)
+    last_name = simpledialog.askstring("Input", "Enter last name", parent=options_interface)
+    emp_id = simpledialog.askstring("Input", "Enter employee ID", parent=options_interface)
+    birth_date = simpledialog.askstring("Input", "Enter birth date (YYYY-MM-DD)", parent=options_interface)
+    email = simpledialog.askstring("Input", "Enter email", parent=options_interface)
+    phone = simpledialog.askstring("Input", "Enter phone", parent=options_interface)
+    address = simpledialog.askstring("Input", "Enter address", parent=options_interface)
+
+    #database connected
+    add_employee(conn, first_name, last_name, emp_id, birth_date, email, phone, address)
+
+    pass
+
+def delete_employee_gui():
+        emp_id = simpledialog.askstring("Input", "Enter employee ID to delete", parent=options_interface)
+
+#database connected
+        delete_employee(conn, emp_id)
+pass
+
+
+def edit_employee():
+    emp_id = simpledialog.askstring("Input", "Enter employee ID to edit", parent=options_interface)
+    first_name = simpledialog.askstring("Input", "Enter new first name", parent=options_interface)
+    last_name = simpledialog.askstring("Input", "Enter new last name", parent=options_interface)
+    birth_date = simpledialog.askstring("Input", "Enter new birth date (YYYY-MM-DD)", parent=options_interface)
+    email = simpledialog.askstring("Input", "Enter new email", parent=options_interface)
+    phone = simpledialog.askstring("Input", "Enter new phone", parent=options_interface)
+    address = simpledialog.askstring("Input", "Enter new address", parent=options_interface)
+
+#database connected
+    edit_employee(conn, emp_id, first_name, last_name, birth_date, email, phone, address)
+
+    pass
+
+# Function to handle the "Verify Employees" button click
+def verify_employees():
+    # Open the camera for facial recognition or license plate recognition
+    open_camera()
+    pass
+
+# Function to handle the "Logout" button click
+def logout():
+    options_interface.withdraw()
+    main_program()
+
+# Function to handle the login button click
+def login():
+    admin_name = admin_name_entry.get()
+    password = password_entry.get()
+
+    # Implement your authentication logic here
+    # For simplicity, we will consider any input as valid
+    if admin_name and password:
+        main_login_interface.withdraw()
+        options_interface.deiconify()
+    else:
+        messagebox.showerror("Login Error", "Invalid credentials")
+
+# Create the main login interface
+main_login_interface = tk.Tk()
+main_login_interface.title("Admin Login")
+admin_name_label = tk.Label(main_login_interface, text="Admin Name:")
+admin_name_label.pack()
+admin_name_entry = tk.Entry(main_login_interface)
+admin_name_entry.pack()
+password_label = tk.Label(main_login_interface, text="Password:")
+password_label.pack()
+password_entry = tk.Entry(main_login_interface, show="*")
+password_entry.pack()
+login_button = tk.Button(main_login_interface, text="Login", command=login)
+login_button.pack()
+
+# Create the options interface
+options_interface = tk.Tk()
+options_interface.title("Access Garuntor")
+options_interface.withdraw()  # Hide it initially
+add_employee_button = tk.Button(options_interface, text="Add New Employee", command=add_employee)
+delete_employee_button = tk.Button(options_interface, text="Delete Employee", command=delete_employee)
+verify_employees_button = tk.Button(options_interface, text="Verify Employees", command=verify_employees)
+logout_button = tk.Button(options_interface, text="Logout", command=logout)
+
+add_employee_button.pack()
+delete_employee_button.pack()
+verify_employees_button.pack()
+logout_button.pack()
+
+# Start the Tkinter main loop
+main_login_interface.mainloop()
+
+
